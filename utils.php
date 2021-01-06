@@ -11,18 +11,15 @@ by Alan Levine, cogdogblog@gmail.com
 Called to connect to mySQL database
 -------------- DB_CONNECT ----------------------------------- */
 
-function db_connect($db,$script=null) {
-	$ln = @mysql_connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASS);
-	if ( $ln && mysql_select_db($db,$ln) ) {
-		return ($ln);
-	}
-	else {
-		// if connected to server then database error
-		// $failure = ($ln) ? 'database: '. $db : ' MySQL Server';
-		// $msg = "Can't connect to the $failure.\n\nMySQL reports:\n".mysql_error();
-		// if (!is_null($script)) $msg .= "\n\nError occurred in: $script";
-		// mail(CHIEF,'5 Card MySQL error',$msg,'From: '.CHIEF."\nX-Mailer: PHP/".phpversion());
+function db_connect( $database ) {
+	$ln = mysqli_connect(MYSQL_HOST,MYSQL_USER,MYSQL_PASS, $database);
+	
+	/* check connection */
+	if (mysqli_connect_errno()) {
+		printf("Connection failed: %s\n", mysqli_connect_error());
 		return false;
+	} else {
+		return ($ln);
 	}
 }
 
@@ -31,8 +28,8 @@ function db_connect($db,$script=null) {
 clean up strings added to database- remove any HTML and clean for quotes, etc
 -------------- CLEANSTRING_FOR_DB ------------------------------------------- */
 
-function cleanstring_for_db($str) {
-	return mysql_real_escape_string(strip_tags($str));
+function cleanstring_for_db($db, $str) {
+	return mysqli_real_escape_string($db, strip_tags($str));
 }
 
 
@@ -77,7 +74,7 @@ function get_from_flickr($db, $card_deck, $tag, $verbose=false, $maxdate='') {
 		
 			if ($verbose) echo '<li>  --- Inserting next 10 photos into card database... --- </li>';
 			$query = "INSERT INTO $card_deck (fid,farm,server,secret,nsid,username,tag) VALUES " . implode(',',$values);
-			$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+			$result = mysqli_query( $db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 			
 			// reset array
 			$values = array();
@@ -108,7 +105,7 @@ function get_from_flickr($db, $card_deck, $tag, $verbose=false, $maxdate='') {
 	if (count($values)) {
 		
 		$query = "INSERT INTO $card_deck (fid,farm,server,secret,nsid,username,tag) VALUES " . implode(',',$values);
-		$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+		$result = mysqli_query($db,$query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 			if ($verbose) echo '<li>  --- Inserting last photos into card database... --- </li>';
 	}
 	
@@ -137,9 +134,9 @@ function mark_photo_dead ($db, $card_deck, $furl ) {
      $fid = end($path); // get the value of the last element, the flickr id
 
 	$query = "UPDATE $card_deck SET active=0 WHERE fid = $fid";
-	$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	$result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	// return number of rows updated
-	return ( mysql_info() );
+	return ( mysqli_info($db) );
 }
 
 
@@ -150,8 +147,8 @@ option to provide conditions
 
 function get_tbl_count($db, $table, $conditions = 1) {
 	$query = "SELECT COUNT(*) FROM $table WHERE $conditions";
-	$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
-	$row = mysql_fetch_row($result);
+	$result = mysqli_query( $db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
+	$row = mysqli_fetch_row($result);
 	return ($row[0]);
 }
 
@@ -181,10 +178,10 @@ function get_pics($db,$tag,$current,$num=5) {
 	// query for random selection from database
 	$query = "SELECT * FROM $card_deck WHERE $cond and tag='$tag' and active=1 ORDER BY RAND() limit 0,$num";
 	
-	$result = mysql_query($query, $db);	
-	if (mysql_error() ) echo 'Ouch! Database problem:' . mysql_error();
+	$result = mysqli_query($db, $query);	
+	if (mysqli_error($db) ) echo 'Ouch! Database problem:' . mysqli_error($db);
 	
-	 while ($row = mysql_fetch_array($result)) {
+	 while ($row = mysqli_fetch_array($result)) {
 	 	$pics[] = array(
 	 		'id' => $row['id'], 
 	 		'url' => "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg",
@@ -209,15 +206,15 @@ function save_story($db, $card_ids, $tag, $title, $name, $comments) {
 					SET 
 					deck ='" . $tag . "', 
 					cards ='$card_ids', 
-					title = '" . cleanstring_for_db($title) . "', 
-					name ='" . cleanstring_for_db($name) . "', 
+					title = '" . cleanstring_for_db($db, $title) . "', 
+					name ='" . cleanstring_for_db($db, $name) . "', 
 					created = NOW(),
-					comments = '" . cleanstring_for_db($comments) . "'";
+					comments = '" . cleanstring_for_db($db, $comments) . "'";
 					
-	$result = mysql_query($query, $db);	
-	if (mysql_error() ) echo 'Ouch! Database problem:' . mysql_error();
+	$result = mysqli_query($db, $query);	
+	if (mysqli_error($db) ) echo 'Ouch! Database problem:' . mysqli_error($db);
 	
-	return (mysql_insert_id());
+	return (mysqli_insert_id($db));
 	
 }
 
@@ -237,10 +234,10 @@ function get_image_info($db,$id,$mode='url') {
 	$query = "SELECT * FROM $card_deck WHERE id=$id";
 
 	
-	$result = mysql_query($query, $db);	
-	if (mysql_error() ) echo 'Ouch! Database problem:' . mysql_error();
+	$result = mysqli_query($db, $query);	
+	if (mysqli_error($db) ) echo 'Ouch! Database problem:' . mysqli_error($db);
 	
-	$row = mysql_fetch_array($result);
+	$row = mysqli_fetch_array($result);
 	
 	if ($mode=='url') {
 		// return just url for medium
@@ -311,9 +308,9 @@ function get_all_photos($db, $idx, $batch, $cond='1') {
 	 $query = "SELECT * FROM cards WHERE $cond and active=1 ORDER by id DESC  LIMIT $idx, $batch";
 	 
 	 
-	 $result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	 $result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
-	 while ($row = mysql_fetch_array($result)) {
+	 while ($row = mysqli_fetch_array($result)) {
     	$allphotos[] = $row;
     }
 	
@@ -327,9 +324,9 @@ function get_pecha_photos($db, $cond='1', $idx=0, $batch=20) {
 	 $query = "SELECT id FROM cards WHERE $cond and active=1 ORDER by RAND() LIMIT $idx, $batch";
 	 
 	 
-	 $result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	 $result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
-	 while ($row = mysql_fetch_array($result)) {
+	 while ($row = mysqli_fetch_array($result)) {
     	$allphotos[] = $row[0];
     }
 	
@@ -347,8 +344,8 @@ Get a single story
 function get_story($db, $id) {
 
 	 $query = "SELECT deck, cards, name, title, UNIX_TIMESTAMP(created) as created, comments FROM `stories` WHERE id='$id'";
-	 $result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
-	 $story = mysql_fetch_array($result);
+	 $result = mysqli_query($db,$query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
+	 $story = mysqli_fetch_array($result);
      return ($story);	
 }
 
@@ -362,9 +359,9 @@ function get_all_stories($db, $idx, $batch, $cond='1') {
 	 $query = "SELECT id, deck, name, title, UNIX_TIMESTAMP(created) as created FROM stories WHERE $cond ORDER by id DESC  LIMIT $idx, $batch";
 	 
 	 
-	 $result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	 $result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
-	 while ($row = mysql_fetch_array($result)) {
+	 while ($row = mysqli_fetch_array($result)) {
     	$allstories[] = $row;
     }
 	
@@ -380,9 +377,9 @@ function get_rand_stories($db, $num) {
 	$stories= array();
 	
 	$query = "SELECT * FROM `stories` WHERE 1 ORDER BY RAND() limit 0,$num";
-	$result = mysql_query($query, $db);	
-	if (mysql_error() ) echo 'Ouch! Database problem:' . mysql_error();
-	 while ($row = mysql_fetch_array($result)) {
+	$result = mysqli_query($db, $query);	
+	if (mysqli_error($db) ) echo 'Ouch! Database problem:' . mysqli_error($db);
+	 while ($row = mysqli_fetch_array($result)) {
     	$stories[] = $row;
     }
     
@@ -431,13 +428,13 @@ function get_story_links($db, $id) {
 	
 	// find the story id prior to the current one
 	$query = "SELECT id FROM `stories` WHERE id < $id order by id desc Limit 0,1";
-	$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	$result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
 	
 	
-	if (mysql_num_rows($result)) {
+	if (mysqli_num_rows($result)) {
 		// build a link if there was a previous story found
-		$row = mysql_fetch_row($result);
+		$row = mysqli_fetch_row($result);
 	 	$str .= '<a href="show.php?id=' . $row[0] . '">prev</a> | ';
 	} else {
 		// no link for the first id
@@ -450,12 +447,12 @@ function get_story_links($db, $id) {
 	
 	// find the story id after the current one	
 	$query = "SELECT id FROM `stories` WHERE id > $id order by id asc Limit 0,1";
-	$result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	$result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
 	 
-	if (mysql_num_rows($result)) {
+	if (mysqli_num_rows($result)) {
 		// build a link if there was a previous story found
-		$row = mysql_fetch_row($result);
+		$row = mysqli_fetch_row($result);
 	 	$str .= '<a href="show.php?id=' . $row[0] . '">next</a>';
 	} else {
 		// no link for the last id
@@ -479,9 +476,9 @@ function get_other_stories($db, $id, $cards) {
 	
 	// query for all stories that have the same 5 cards, but exclude story $id
 	 $query = "SELECT id, name, title FROM `stories` WHERE cards = '$cards' AND id!=$id ORDER by id DESC";
-	 $result = mysql_query($query, $db) or die ("Error Error! " . mysql_error(). " in query<br>$query");
+	 $result = mysqli_query($db, $query) or die ("Error Error! " . mysqli_error($db). " in query<br>$query");
 	 
-	 while ($row = mysql_fetch_array($result)) {
+	 while ($row = mysqli_fetch_array($result)) {
     	$allstories[] = $row;
      }
      
