@@ -34,7 +34,7 @@
 
 					<li><a href="http://www.flickr.com/groups/visualstory/">Tell a Story in Five Frames</a></li>
 
-					<li><a href="http://flickr.com/photos/cogdog">CogDogBlog Photos</a></li>
+					<li><a href="http://flickr.com/photos/cogdog">CogDog Photos</a></li>
 
 				</ul>
 			
@@ -45,9 +45,9 @@
 				<h3>Wag More</h3>
 				
 				<ul>
-					<li><a href="http://cogdogblog.com/">CogDogBlog</a></li>
-					<li><a href="http://50ways.wikispaces.com/">50+ Web 2.0 Ways to tell a Story</a></li>
-					<li><a href="http://cogdogblog.com/stuff/nv09/">Say/Blog It in Pictures</a></li>
+					<li><a href="http://pechaflickr.net">Pechaflickr</a></li>
+					<li><a href="http://50ways.cogdogblog.com/">50+ Web 2.0 Ways to tell a Story</a></li>
+					<li><a href="https://cog.dog/show/2014/07/07/picture-this/">Picture This</a></li>
 				</ul>
 			
 			</div>
@@ -59,6 +59,21 @@
 		<div id="copyright">
 		
 		<?php echo $my_title?>: http://<?php echo "{$_SERVER['SERVER_NAME']}{$_SERVER['PHP_SELF']}"; if ($_SERVER['QUERY_STRING']) echo '?' . $_SERVER['QUERY_STRING']?><br>
-			<a href="http://5card.cogdogblog.com/">five card flickr</a> is a <a href="http://cogdogblog.com/">CogDogBlog</a> production  | web design based on <a href="http://www.oswd.org/design/preview/id/3364">Chary</a> by <a href="http://www.nikhedonia.com/" title="SimplyGold">Sadhana Ganapathiraju</a> 
+			<a href="http://5card.cogdogblog.com/">five card flickr</a> is a <a href="https://cog.dog/">CogDog</a> production  | web design based on <a href="http://www.oswd.org/design/preview/id/3364">Chary</a> by <a href="http://www.nikhedonia.com/" title="SimplyGold">Sadhana Ganapathiraju</a> 
 
 		</div>
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29227240-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>

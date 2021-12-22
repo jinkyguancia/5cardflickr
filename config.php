@@ -1,7 +1,7 @@
 <?php
 /*
 Five Card Flickr 
-version 3.3
+version 3.0 (Aug 18, 2013)
 
 Site http://5card.cogdogblog.com
 by Alan Levine, cogdogblog@gmail.com
@@ -39,7 +39,7 @@ define('GTRANSKEY', '');
 define('CARD_DECK', 'cards'); 
 
 // number of stories to show per page on gallery
-define('PAGER', 200);
+define('PAGER', 100);
 
 // number of photos to show per page on tag listing
 define('PHOTOPAGER', 160);
@@ -89,7 +89,7 @@ $use_captcha = true; // flag to use captcha for user submissions, highly recomme
 
 
 if ($use_captcha) {	
-	// Get a key from https://www.google.com/recaptcha/
+	// Get a key from http://recaptcha.net/api/getkey
 	$sitekey   = 	"<insert site key>";
 	$secretkey = 	"<insert secret key>";
 }
