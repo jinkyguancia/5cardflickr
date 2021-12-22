@@ -96,7 +96,7 @@ function get_from_flickr($db, $card_deck, $tag, $verbose=false, $maxdate='') {
 		//update count
 		$cnt++;
 		
-		if ($verbose) echo '<li><img src="' . "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . '_m.jpg" /> Processing flickr photo <a href="http://www.flickr.com/photos/' . $photo['owner'] . '/' . $photo['id'] . '/">' . 'http://www.flickr.com/photos/' . $photo['owner'] . '/' . $photo['id'] .   '/</a> by ' . $owner['username'] . '</li>';
+		if ($verbose) echo '<li><img src="' . "https://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . '_m.jpg" /> Processing flickr photo <a href="https://www.flickr.com/photos/' . $photo['owner'] . '/' . $photo['id'] . '/">' . 'https://www.flickr.com/photos/' . $photo['owner'] . '/' . $photo['id'] .   '/</a> by ' . $owner['username'] . '</li>';
 		
 		
 	}
@@ -184,7 +184,7 @@ function get_pics($db,$tag,$current,$num=5) {
 	 while ($row = mysqli_fetch_array($result)) {
 	 	$pics[] = array(
 	 		'id' => $row['id'], 
-	 		'url' => "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg",
+	 		'url' => "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg",
 	 		'link' => "http://www.flickr.com/photos/" . $row['nsid'] . "/" . $row['fid'] . "/",
 	 		'credit' => stripslashes($row['username']),
 	 		);
@@ -241,33 +241,33 @@ function get_image_info($db,$id,$mode='url') {
 	
 	if ($mode=='url') {
 		// return just url for medium
-		return "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
+		return "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
 		
 	} elseif ($mode=='sq') {
 	// return just url for thumbnail
-		return "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s.jpg";
+		return "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s.jpg";
 		
 		
 		
 	} elseif ($mode=='p') {
 	// pecha moder return just url for medium 640 size
-		return "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_d.jpg";	
+		return "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_d.jpg";	
 	
 	} else {
 		// return all photo info
 		$pic= array();
 
-    	$pic['url']= "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
+    	$pic['url']= "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
     	
-    	$pic['med'] = "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_d.jpg";
+    	$pic['med'] = "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_d.jpg";
     	
     	// build link to flickr page for this photo
-		$pic['link']="http://www.flickr.com/photos/" . $row['nsid'] . "/" . $row['fid'] . "/";
+		$pic['link']="https://www.flickr.com/photos/" . $row['nsid'] . "/" . $row['fid'] . "/";
 		
 		$pic['credit']=stripslashes($row['username']);
 		
 		// url for square icon
-		$pic['sq'] = "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s_d.jpg";
+		$pic['sq'] = "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s_d.jpg";
 
 		return $pic;
 	}
@@ -284,15 +284,15 @@ function get_image_info_array($row) {
 	
 	$pic= array();
 
-	$pic['url']= "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
+	$pic['url']= "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_m.jpg";
 	
 	// build link to flickr page for this photo
-	$pic['link']="http://www.flickr.com/photos/" . $row['nsid'] . "/" . $row['fid'] . "/";
+	$pic['link']="https://www.flickr.com/photos/" . $row['nsid'] . "/" . $row['fid'] . "/";
 	
 	$pic['credit']=stripslashes($row['username']);
 	
 	// url for square icon
-	$pic['sq'] = "http://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s_d.jpg";
+	$pic['sq'] = "https://farm" . $row['farm'] . ".static.flickr.com/" . $row['server'] . "/" . $row['fid'] . "_" . $row['secret'] . "_s_d.jpg";
 
 	return $pic;
 
@@ -389,7 +389,7 @@ function get_rand_stories($db, $num) {
 function get_story_embed($db, $id, $js=false) {
 	$story = get_story($db, $id);
 
-	$url_path = 'http://' . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']) . '/';
+	$url_path = 'https://' . $_SERVER['SERVER_NAME'] . dirname($_SERVER['PHP_SELF']) . '/';
 	
 	$out = 'document.write(\'<div class="fivecardstory">\');';
 	
@@ -587,7 +587,7 @@ If the total length is more than 140 chars, we truncate the title of the story
 function tweet_story($id,$title,$msg) {
 	
 	// build the URL for the story
-	$url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?id=' . $id;
+	$url = 'https://' . $_SERVER['SERVER_NAME'] . $_SERVER['PHP_SELF'] . '?id=' . $id;
 	
 	// get length of string for message and URL (includes space in between)
 	$cnt = strlen($url) + strlen($msg) + 1;
